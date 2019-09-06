@@ -1,0 +1,57 @@
+ <html>
+    <head>
+    </head>
+    <body>
+         <canvas id="paper" width="400" height="400">   
+         </canvas>
+    </body>
+    <script>
+        let canvas =document.getElementById("paper")
+        let ctx = canvas.getContext('2d')
+        class Sprite{
+                constructor(color,x,y,speed,heading){
+                    this.color = color
+                    this.y = y
+                    this.x = x
+                    this.speed = speed
+                    this.heading = heading
+                }
+                moveAndPaint(diff){
+                      ctx.fillStyle = this.color
+                ctx.fillRect(this.x, this.y, 5, 5)            
+                if(this.x >= canvas.width || this.y >= canvas.height)
+                    this.heading += 90
+                else if(this.x <= 0 || this.y <= 0)
+                    this.heading -= 90               
+                let s = (this.speed * diff)/1000 //s = vt
+                let degree = Math.PI * this.heading / 180;
+                this.x = Math.round (Math.cos(degree) * s)
+                this.y = Math.round (Math.sin(degree) * s)
+                this.x = Math.min(this.x, canvas.width)
+                this.x = Math.max(this.x, 0)
+                this.y = Math.min(this.y,canvas.height)
+                this.y = Math.max(this.y,0)
+
+                }
+            }
+            let sprites = [
+            new Sprite('#3343FF',0,10,50,180),
+            new Sprite('#3384FF',40,30,30,180),
+            new Sprite('#33C8FF',200,50,70,180),
+            new Sprite('#33E3FF',80,70,100,180),
+            new Sprite('#33FFF2 ',300,90,150,180)
+            ]
+            let lastFrameStamp = new Date().getTime()
+            function draw(){
+                ctx.clearRect(0,0,canvas.width,canvas.height)
+                let now = new Date().getTime()
+                let diff = now - lastFrameStamp
+                for(let sprite of sprites)
+                sprite.moveAndPaint(diff)
+                window.requestAnimationFrame(draw)
+                lastFrameStamp = now
+            }
+            window.requestAnimationFrame(draw)
+
+    </script>
+ </html>
